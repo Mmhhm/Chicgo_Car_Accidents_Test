@@ -1,4 +1,5 @@
 import csv
+from bson.objectid import ObjectId
 from service.generic import parse_date
 from database.config import locations, accidents, injuries
 
@@ -23,9 +24,9 @@ def init_accidents_db():
             location = {
                 'location_id': row['BEAT_OF_OCCURRENCE']
             }
-            location_id = locations.insert_one(location).inserted_id
-        else:
-            location_id = locations.find_one({'location_id': row['BEAT_OF_OCCURRENCE']})
+            locations.insert_one(location)
+
+        location_id = locations.find_one({'location_id': row['BEAT_OF_OCCURRENCE']}, {"_id": 1})['_id']
 
         date = parse_date(row['CRASH_DATE'])
 
