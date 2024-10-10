@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from service.blue_prints import accidents_by_location, get_accidents_by_cause, get_accidents_stat
+from service.blue_prints import accidents_by_location, get_accidents_by_cause, get_accidents_stat, get_accidents_by_period
 
 accidents_bp = Blueprint('accidents_analyze', __name__)
 
@@ -10,7 +10,8 @@ def get_accidents(location):
 
 @accidents_bp.route('/accidents/location/<location>/<date>/<period>', methods=['GET'])
 def accidents_by_period(location, date, period):
-    pass
+    res = get_accidents_by_period(location, date, period)
+    return jsonify({'accidents': res})
 
 @accidents_bp.route('/accidents/cause/<location>', methods=['GET'])
 def accidents_by_cause(location):
