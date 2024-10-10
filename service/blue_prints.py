@@ -1,5 +1,6 @@
-from database.config import locations, accidents
+from database.config import locations, accidents, injuries
 from bson.objectid import ObjectId
+
 
 
 def accidents_by_location(location: int):
@@ -10,12 +11,18 @@ def accidents_by_location(location: int):
 
 
 
+
 def get_accidents_by_cause(location: int):
     location_id = locations.find_one({'location_id': location}, {'location_id': 0})['_id']
     res = accidents.aggregate([{ "$match" : {"location_id" : location_id}},{ "$group" : { "_id" : "$prime_cause", "total" : { "$sum" : 1 } }}])
     return res
 
 
+def get_accidents_stat(location: int):
+    location_id = locations.find_one({'location_id': location}, {'location_id': 0})['_id']
+    res = injuries.aggregate([{ "$match" : {"location_id" : location_id}},{ "$group" : { "_id" : 0, "sum_injured" : { "$sum" : {"$toInt": "$injuries_total" }},
+                                                                                                                      "sum_killed" : { "$sum" : {"$toInt": "$injuries_fatal" } }}}])
+    return res
 
 
 

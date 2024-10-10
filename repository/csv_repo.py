@@ -2,6 +2,7 @@ import csv
 from bson.objectid import ObjectId
 from service.generic import parse_date
 from database.config import locations, accidents, injuries
+from service.generic import parse_to_int
 
 
 def read_csv(csv_path):
