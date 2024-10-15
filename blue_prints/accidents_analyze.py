@@ -3,7 +3,7 @@ from service.blue_prints import accidents_by_location, get_accidents_by_cause, g
 
 accidents_bp = Blueprint('accidents_analyze', __name__)
 
-@accidents_bp.route('/accidents/area/<location>', methods=['GET'])
+@accidents_bp.route('/accidents/location/<location>', methods=['GET'])
 def get_accidents(location):
     res = accidents_by_location(location)
     return jsonify({'accidents': res})

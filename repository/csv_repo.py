@@ -20,7 +20,7 @@ def init_accidents_db():
     if injuries.count_documents({}) > 0:
         injuries.drop()
 
-    for row in read_csv('./Traffic_Crashes_-_Crashes - 20k rows.csv'):
+    for row in read_csv('./Traffic_Crashes_-_Crashes.csv'):
         if not locations.find_one({'location_id': row['BEAT_OF_OCCURRENCE']}):
             location = {
                 'location_id': row['BEAT_OF_OCCURRENCE']
@@ -43,8 +43,8 @@ def init_accidents_db():
         injury = {
             'accident_id': accident_id,
             'location_id': location_id,
-            'injuries_total': row['INJURIES_TOTAL'],
-            'injuries_fatal': row['INJURIES_FATAL']
+            'injuries_total': parse_to_int(row['INJURIES_TOTAL']),
+            'injuries_fatal': parse_to_int(row['INJURIES_FATAL'])
         }
 
         injuries.insert_one(injury)

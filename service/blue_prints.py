@@ -14,12 +14,11 @@ def accidents_by_location(location: int):
 
 def get_accidents_by_period(location, date, period):
     location_id = locations.find_one({'location_id': location}, {'location_id': 0})['_id']
-    str_date = datetime.strptime(date, '%Y-%m-%d')
-    curr_date = accidents.find({'location_id': location_id})
-    for d in curr_date:
-        d['date'] = d['date'].setHours(0,0,0,0)
+    parsed_date = datetime.strptime(date, '%d-%m-%Y')
     if period.lower() == 'day':
-        res = curr_date.get('date')
+        res = accidents.find({'location_id': location_id, 'date': parsed_date}, {'_id': 0, 'location_id': 0})
+    elif period.lower() == 'month':
+        res = accidents.find({'location_id': location_id, 'date': parsed_date}, {'_id': 0, 'location_id': 0})
     return list(res)
 
 
@@ -31,9 +30,10 @@ def get_accidents_by_cause(location: int):
 
 def get_accidents_stat(location: int):
     location_id = locations.find_one({'location_id': location}, {'location_id': 0})['_id']
-    res = injuries.aggregate([{ "$match" : {"location_id" : location_id}},{ "$group" : { "_id" : 0, "sum_injured" : { "$sum" : {"$toInt": "$injuries_total" }},
-                                                                                                                      "sum_killed" : { "$sum" : {"$toInt": "$injuries_fatal" } }}}])
+    res = injuries.aggregate([{ "$match" : {"location_id" : location_id}},{ "$group" : { "_id" : None, "sum_injured" : { "$sum" : "$injuries_total" },
+                                                                                                                 "sum_killed" : { "$sum" : "$injuries_fatal" } }}])
     return res
+
 
 
 
